@@ -1,0 +1,14 @@
+# Core IREE packages
+iree-compiler>=20240207.859
+iree-runtime>=20240207.859
+
+# TensorFlow support
+tensorflow>=2.13.0
+iree-tools-tf>=20240207.859
+
+# PyTorch support
+torch>=2.1.0
+torch-mlir>=20240207
+
+# Utilities
+numpy>=1.24.0
