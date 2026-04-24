@@ -1,6 +1,12 @@
+# Requires Python 3.11, 3.12, or 3.13 on Windows.
+# (Python 3.10 has no Windows wheel for iree-base-compiler / iree-base-runtime.)
+# On Linux (manylinux x86_64 / aarch64) Python 3.10 also works.
+
 # Core IREE packages
-iree-compiler>=20240207.859
-iree-runtime>=20240207.859
+# Renamed in late 2024: iree-compiler -> iree-base-compiler, iree-runtime -> iree-base-runtime.
+# The old names still resolve to the final 20241104.1068 release; prefer the new ones.
+iree-base-compiler>=3.11.0
+iree-base-runtime>=3.11.0
 
 # TensorFlow support
 tensorflow>=2.13.0

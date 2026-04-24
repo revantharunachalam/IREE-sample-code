@@ -51,9 +51,9 @@ module @softmax {
     // exp(x)
     %exp_x = stablehlo.exponential %x : tensor<2x4xf32>
     // sum over last dim
-    %init = stablehlo.constant dense<0.0> : tensor<2xf32>
+    %init = stablehlo.constant dense<0.0> : tensor<f32>
     %sum = stablehlo.reduce(%exp_x init: %init) applies stablehlo.add
-        across dimensions = [1] : (tensor<2x4xf32>, tensor<2xf32>) -> tensor<2xf32>
+        across dimensions = [1] : (tensor<2x4xf32>, tensor<f32>) -> tensor<2xf32>
     // broadcast sum back and divide
     %sum_bcast = stablehlo.broadcast_in_dim %sum, dims = [0]
         : (tensor<2xf32>) -> tensor<2x4xf32>
@@ -88,7 +88,7 @@ def demo_matmul_add() -> None:
     config = ireert.Config(driver_name="local-task")
     ctx = ireert.SystemContext(config=config)
     ctx.add_vm_module(ireert.VmModule.copy_buffer(ctx.instance, vmfb))
-    m = ctx.modules.module
+    m = ctx.modules.matmul_add
 
     a = np.random.randn(4, 8).astype(np.float32)
     b = np.random.randn(8, 4).astype(np.float32)
@@ -109,10 +109,8 @@ def demo_relu() -> None:
     config = ireert.Config(driver_name="local-task")
     ctx = ireert.SystemContext(config=config)
     ctx.add_vm_module(ireert.VmModule.copy_buffer(ctx.instance, vmfb))
-    m = ctx.modules.module
+    m = ctx.modules.relu
 
-    x = np.array([[-1, 2, -3, 4], [0, -1, 2, -3]], dtype=np.float32).reshape(4, 4)
-    # pad to 4x4 for the static module
     x = np.random.randn(4, 4).astype(np.float32)
     result = np.array(m.relu(x))
     print(f"Input min: {x.min():.3f}, Output min (should be >= 0): {result.min():.3f}")
@@ -126,7 +124,7 @@ def demo_softmax() -> None:
     config = ireert.Config(driver_name="local-task")
     ctx = ireert.SystemContext(config=config)
     ctx.add_vm_module(ireert.VmModule.copy_buffer(ctx.instance, vmfb))
-    m = ctx.modules.module
+    m = ctx.modules.softmax
 
     x = np.array([[1.0, 2.0, 3.0, 4.0], [0.1, 0.2, 0.3, 0.4]], dtype=np.float32)
     result = np.array(m.softmax(x))
